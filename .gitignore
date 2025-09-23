@@ -1,0 +1,73 @@
+# ===== ОС и IDE =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== Node / пакетные менеджеры =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+.eslintcache
+
+# ===== Env (храним секреты локально) =====
+.env
+.env.*
+!.env.example
+*.local
+
+# Vercel / Cloudflare (локальные артефакты)
+.vercel/
+.wrangler/
+.dev.vars
+
+# ===== бандлы/сборки/кэши на фронте =====
+dist/
+build/
+public/build/
+public/dist/
+.cache/
+.tmp/
+*.cache
+parcel-cache/
+.parcel-cache/
+*.map
+
+# Next/Gatsby/Vite (на будущее — не мешают)
+.next/
+out/
+.cache-loader/
+.storybook-out/
+.vite/
+vite.svg
+
+# ===== тесты/отчёты =====
+coverage/
+.nyc_output/
+junit.xml
+
+# ===== PIDs / lock-файлы процесса =====
+pids/
+*.pid
+*.pid.lock
+
+# ===== Логи приложений =====
+logs/
+*.log
+log/
+debug.log
+
+# ===== Разное =====
+# сгенерированные статические файлы/экспорты (если появятся)
+export/
+reports/
+
+# ===== MODX AjaxForm/кеш, если вдруг (оставь закомментированным, при необходимости раскомментируй) =====
+# core/cache/
+# assets/components/ajaxform/cache/
+

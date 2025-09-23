@@ -41,10 +41,14 @@
                             <img class="max-h-10 lg:max-h-12 xl:max-h-[none]" src="../template/assets/images/logo-string.svg" alt="logo" loading="lazy" decoding="async">
                         </a>
 
-                                                <a href="https://wa.me/89825137594" target="_blank" class="flex items-center gap-2 text-[#5A575F] transition-all hover:text-[--main-clr]">
-                            <svg class="w-[7svw] aspect-square text-[inherit] s:w-7 md:w-5 lg:w-6"><use xlink:href="#svg-whatsapp"></use></svg>
-                            <span class="hidden md:block">Написать в WhatsApp</span>
-                        </a>
+                                                <a
+  href="https://wa.me/79825137594?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%BF%D0%B8%D1%88%D1%83%20%D0%92%D0%B0%D0%BC%20%D0%BF%D0%BE%20%D0%BF%D0%BE%D0%B2%D0%BE%D0%B4%D1%83%20%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"
+  target="_blank"
+  class="flex items-center gap-2 text-[#5A575F] transition-all hover:text-[--main-clr]">
+  <svg class="w-[7svw] aspect-square text-[inherit] s:w-7 md:w-5 lg:w-6"><use xlink:href="#svg-whatsapp"></use></svg>
+  <span class="hidden md:block">Написать в WhatsApp</span>
+</a>
+
 
                         <a href="tel:89825137594" class="flex items-center gap-2 text-[#5A575F] transition-all hover:text-[--main-clr]">
                             <svg class="w-[7svw] aspect-square text-[inherit] s:w-7 md:w-5 lg:w-6"><use xlink:href="#svg-phone"></use></svg>
@@ -222,23 +226,69 @@
 </div>
 
 <script>
-    const form = document.querySelector('form');
-    const phoneInputNode = form.querySelector('[name="phone"]');
-    IMask(phoneInputNode, { mask: '+7 (000) 000-00-00' });
+(function () {
+  const ENDPOINT = 'http://localhost:8080/api/telegram';
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        form.parentNode.classList.add('sending');
-    });
-    
-    $(document).on('af_complete', function (event, response) {
-        const formBlock = response.form[0].closest('.sending');
-        
-        if (formBlock) {
-            formBlock.classList.remove('sending');
-        }
-    });
+  const form = document.querySelector('form'); // твоя форма
+  if (!form) return;
+
+  // honeypot для ботов: добавим скрытое поле
+  const hp = document.createElement('input');
+  hp.type = 'text'; hp.name = 'website'; hp.tabIndex = -1;
+  hp.autocomplete = 'off'; hp.style.position='absolute'; hp.style.left='-9999px';
+  form.appendChild(hp);
+
+  // Маска телефона (если IMask уже подключён твоими ассетами)
+  const phoneInput = form.querySelector('[name="phone"]');
+  if (window.IMask && phoneInput) IMask(phoneInput, { mask: '+7 (000) 000-00-00' });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const box = form.closest('.main-form');
+    box?.classList.add('sending');
+
+    try {
+      const fd = new FormData(form);
+      const S = v => String(v ?? '').trim();
+
+      const collectType = [
+        fd.get('raz_checkbox') ? 'Разовый' : null,
+        fd.get('period_checkbox') ? 'Периодический' : null
+      ].filter(Boolean).join(' / ') || S(fd.get('data-collect') || 'Не указано');
+
+      const payload = {
+        form: document.title || 'Форма заявки',
+        username: S(fd.get('username') || fd.get('name')),
+        phone: S(fd.get('phone') || fd.get('tel')),
+        email: S(fd.get('useremail') || fd.get('email')),
+        message: S(fd.get('message') || fd.get('comment')),
+        collectType,
+        page: location.href,
+        ua: navigator.userAgent,
+        honeypot: S(fd.get('website'))
+      };
+
+      const r = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'Не удалось отправить');
+
+      // Успех: показать блок УСПЕХА, очистить форму
+      document.querySelector('.main-form-success')?.classList.remove('hidden');
+      form.reset();
+    } catch (err) {
+      alert('Ошибка отправки. Попробуйте ещё раз.\n\n' + (err?.message || ''));
+    } finally {
+      box?.classList.remove('sending');
+    }
+  });
+})();
 </script>
+
         <div class="wrap flex relative z-20">
     <div class="bg-[--main-clr] w-full flex-1"></div>
 
@@ -281,7 +331,10 @@
                             <svg class="aspect-square w-5"><use xlink:href="#svg-email"></use></svg>
                             parsing.info57@gmail.com                        </a>
 
-                        <a class="flex items-center gap-3 text-[16px] text-[#c6d8ff] md:text-[18px] hover:text-white transition-all" target="_blank" href="https://wa.me/89825137594">
+                        <a
+  href="https://wa.me/79825137594?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%BF%D0%B8%D1%88%D1%83%20%D0%92%D0%B0%D0%BC%20%D0%BF%D0%BE%20%D0%BF%D0%BE%D0%B2%D0%BE%D0%B4%D1%83%20%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"
+  target="_blank"
+  class="flex items-center gap-2 text-[white] transition-all hover:text-[--main-clr] ">
                             <svg class="aspect-square w-5"><use xlink:href="#svg-whatsapp"></use></svg>
                             Написать в WhatsApp
                         </a>
@@ -368,7 +421,8 @@
         <path d="M20.7435 2.2562L12.1552 2.2562L7.86101 2.2562L11.4885 2.26933C14.9052 2.28169 16.6123 6.40886 14.2027 8.8311L20.7435 2.2562Z" fill="currentColor"/>
         <path d="M1.99748 21.0022L14.2027 8.8311M20.7435 2.2562L12.1552 2.2562L7.86101 2.2562M20.7435 2.2562L20.7435 15.1387M20.7435 2.2562L14.2027 8.8311M3.56686 2.2562L7.86101 2.2562M20.7435 19.4328V15.1387M7.86101 2.2562L11.4885 2.26933C14.9052 2.28169 16.6123 6.40886 14.2027 8.8311V8.8311M20.7435 15.1387L20.7157 11.4899C20.69 8.10372 16.5908 6.43035 14.2027 8.8311V8.8311" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-</div>    <script src="../assets/components/ajaxform/js/default.js"></script>
-<script type="text/javascript">AjaxForm.initialize({"assetsUrl":"\/assets\/components\/ajaxform\/","actionUrl":"\/assets\/components\/ajaxform\/action.php","closeMessage":"\u0437\u0430\u043a\u0440\u044b\u0442\u044c \u0432\u0441\u0435","formSelector":"form.ajax_form","pageId":3});</script>
+</div>   
+ <!-- <script src="../assets/components/ajaxform/js/default.js"></script> -->
+<!-- <script type="text/javascript">AjaxForm.initialize({"assetsUrl":"\/assets\/components\/ajaxform\/","actionUrl":"\/assets\/components\/ajaxform\/action.php","closeMessage":"\u0437\u0430\u043a\u0440\u044b\u0442\u044c \u0432\u0441\u0435","formSelector":"form.ajax_form","pageId":3});</script> -->
 </body>
 </html>
